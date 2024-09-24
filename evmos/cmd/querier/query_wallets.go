@@ -9,6 +9,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 )
 
+// storeWallet aggregates all the wallets used in a tx
 func (querier *Querier) storeWallet(tx *types.Transaction, walletCache map[string]struct{}) error {
 	chainID, err := querier.ethClient.NetworkID(context.Background())
 
@@ -33,6 +34,7 @@ func (querier *Querier) storeWallet(tx *types.Transaction, walletCache map[strin
 			walletCache[from] = struct{}{}
 			querier.walletBalances = append(querier.walletBalances, WalletBalance{
 				Address: from,
+				// We do not query for the balance yet because it could still change
 				Balance: common.Big0,
 			})
 		}
@@ -52,6 +54,7 @@ func (querier *Querier) storeWallet(tx *types.Transaction, walletCache map[strin
 				walletCache[toAddress] = struct{}{}
 				querier.walletBalances = append(querier.walletBalances, WalletBalance{
 					Address: toAddress,
+					// We do not query for the balance yet because it could still change
 					Balance: common.Big0,
 				})
 			}

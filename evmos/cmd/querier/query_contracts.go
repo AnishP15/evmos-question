@@ -6,6 +6,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 )
 
+// storeContracts updates the map storing contracts and the number of interactins
 func (querier *Querier) storeContracts(txHash common.Hash) error {
 	// Fetch internal contract calls via transaction trace
 	trace, err := querier.getTransactionTrace(txHash)
@@ -25,6 +26,18 @@ func (querier *Querier) storeContracts(txHash common.Hash) error {
 			}
 			if isContract {
 				querier.contracts[toAddr.Hex()]++
+			}
+		}
+
+		// Also check if "from" address is a contract
+		if fromAddrStr, exists := trace["from"].(string); exists {
+			fromAddr := common.HexToAddress(fromAddrStr)
+			isContract, err := querier.isContractAddress(fromAddr)
+			if err != nil {
+				return err
+			}
+			if isContract {
+				querier.contracts[fromAddr.Hex()]++
 			}
 		}
 
@@ -53,6 +66,8 @@ func (querier *Querier) storeContracts(txHash common.Hash) error {
 	return nil
 }
 
+// sortContractsByInteractions returns a slice representing the contract
+// address with the most interactions based on the mapping
 func (querier *Querier) sortContractsByInteractions() []string {
 	// Extract all contract addresses from the map
 	var contractAddresses []string
@@ -72,12 +87,10 @@ func (querier *Querier) sortContractsByInteractions() []string {
 func (querier *Querier) getTransactionTrace(txHash common.Hash) (map[string]interface{}, error) {
 	var result map[string]interface{}
 
-	// Convert txHash to hex string before using in JSON-RPC call
 	txHashHex := txHash.Hex()
 
 	params := []interface{}{txHashHex, map[string]interface{}{"tracer": "callTracer"}}
 
-	// Make the RPC call
 	err := querier.rpcClient.Call(&result, "debug_traceTransaction", params...)
 	if err != nil {
 		return nil, err

@@ -19,7 +19,7 @@ func main() {
 	}
 
 	startBlockIdx := int64(100)
-	endBlockIdx := int64(102)
+	endBlockIdx := int64(200)
 
 	// Query for blocks between start idx and end idx inclusive and store them on the Querier
 	err = querier.storeBlocks(startBlockIdx, endBlockIdx)
@@ -73,7 +73,7 @@ func (querier *Querier) saveWalletBalancesToCSV(filePath string) error {
 	defer writer.Flush()
 
 	// Write the header for CSV
-	writer.Write([]string{"Address", "Balance"})
+	writer.Write([]string{"Wallet Address", "Balance"})
 
 	// Write each wallet's address and balance as a row
 	for _, wallet := range querier.walletBalances {

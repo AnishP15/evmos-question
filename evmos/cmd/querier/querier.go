@@ -53,7 +53,7 @@ func (querier *Querier) storeWalletsAndContracts() error {
 	walletCache := make(map[string]struct{})
 
 	for _, block := range querier.blocks {
-		fmt.Printf("Aggregating statistics for block %v", block.Number())
+		fmt.Printf("Aggregating statistics for block %v \n", block.Number())
 		for _, tx := range block.Transactions() {
 
 			err := querier.storeWallet(tx, walletCache)

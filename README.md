@@ -1,22 +1,26 @@
 # Evmos Challenge
 
-## How to Run Code
+## How to run the program
 
-First, run an evmos local node
+Firstly run an evmos local node
 
 ```go 
 cd evmos
 evmosd start
 ```
 
-Then, find the ```querier``` directory
+Then navigate to the ```querier``` directory
 
-```go
+```sh
 cd cmd/querier
 make run
 ```
 
-This will start the Querier binary and store the results in csv files.
+This will start the ```Querier``` binary and store the results in csv files.
+
+To run tests:
+
+```ginkgo run```
 
 
 ## Technical Decisions
@@ -24,7 +28,7 @@ This will start the Querier binary and store the results in csv files.
 I decided to run a query process independently to allow for greater customizability. In particular, I added a ```Querier``` struct to store 
 the on-chain statistics we query for in memory.
 
-```
+```go
 type Querier struct {
 	rpcClient      *rpc.Client
 	ethClient      *ethclient.Client
@@ -41,7 +45,7 @@ type WalletBalance struct {
 
 I am storing wallet balances in a slice rather than a map because it is more efficient to sort a slice rather than an unordered map. Also, we only access a particular balance once so it we cannot realize the gains of constant time lookup which a map would provide us. However, I used a map to represent the contracts interacted with since we will need to access a particular contract multiple times to increment the counter if it is interacted with multiple times. Using a slice would be expensive here because we would need to traverse through it multiple times potentially.
 
-In order to actually make the API calls needed for data aggregation, I utilize ```ethClient``` to access RPC endpoints.
+In order to actually make the API calls needed for data aggregation, I utilize ```ethClient``` to access RPC endpoints. After all the data is aggregated in-memory it is written to 2 csv files.
 
 ## Next Steps
 1) Add a CLI so the user can input their query range

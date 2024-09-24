@@ -10,6 +10,8 @@ import (
 // storeBlocks persists to Querier's blocks field the blocks between two indices
 func (querier *Querier) storeBlocks(start int64, end int64) error {
 	var blocks []*types.Block
+
+	// Iterate between start and end idx including endpoints
 	for i := start; i <= end; i++ {
 		block, err := querier.getBlock(i)
 
