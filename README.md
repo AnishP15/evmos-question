@@ -43,7 +43,7 @@ type WalletBalance struct {
 }
 ```
 
-I am storing wallet balances in a slice rather than a map because it is more efficient to sort a slice rather than an unordered map. Also, we only access a particular balance once so it we cannot realize the gains of constant time lookup which a map would provide us. However, I used a map to represent the contracts interacted with since we will need to access a particular contract multiple times to increment the counter if it is interacted with multiple times. Using a slice would be expensive here because we would need to traverse through it multiple times potentially.
+I am storing wallet balances in a slice rather than a map because it is more efficient to sort a slice rather than an unordered map. Also, we only access a particular balance once so we wouldn't even utilize the constant time lookup which a map would provide us. However, I used a map to represent the contracts interacted with since we will need to access a particular contract multiple times to increment the counter if it is interacted with multiple times. Store contract interactions in a slice would be expensive here because we would need to traverse through it multiple times per address potentially.
 
 In order to actually make the API calls needed for data aggregation, I utilize ```ethClient``` to access RPC endpoints. After all the data is aggregated in-memory it is written to 2 csv files.
 
