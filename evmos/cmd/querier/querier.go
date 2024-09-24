@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -52,6 +53,7 @@ func (querier *Querier) storeWalletsAndContracts() error {
 	walletCache := make(map[string]struct{})
 
 	for _, block := range querier.blocks {
+		fmt.Printf("Aggregating statistics for block %v", block.Number())
 		for _, tx := range block.Transactions() {
 
 			err := querier.storeWallet(tx, walletCache)
